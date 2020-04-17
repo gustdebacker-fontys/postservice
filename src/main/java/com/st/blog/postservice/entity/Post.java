@@ -34,8 +34,8 @@ public class Post {
     private int authorId;
 
     private Date datePublished = new Date();
-    private Boolean commentsEnabled = true;
-    private Boolean enabled = false;
+    private boolean commentsEnabled = true;
+    private boolean enabled = false;
     private int views;
     private String snippetTitle;
     private String snippetDescription;
@@ -45,4 +45,21 @@ public class Post {
 
     @Transient
     private Set<Comment> comments;
+
+    public Post(int branch , String article, String featuredImage, int authorId){
+        this.branch = branch;
+        this.article = article;
+        this.featuredImage = featuredImage;
+        this.authorId = authorId;
+    }
+
+    public Post(int branch , String article, String featuredImage, int authorId, boolean commentsEnabled, String snippetTitle, String snippetDescription){
+        this.branch = branch;
+        this.article = article;
+        this.featuredImage = featuredImage;
+        this.authorId = authorId;
+        this.commentsEnabled = commentsEnabled;
+        this.snippetTitle = snippetTitle;
+        this.snippetDescription = snippetDescription;
+    }
 }

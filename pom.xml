@@ -66,6 +66,11 @@
       <scope>test</scope>
       <version>2.1.6.RELEASE</version>
     </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

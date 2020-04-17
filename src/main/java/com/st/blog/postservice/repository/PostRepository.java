@@ -3,10 +3,8 @@ package com.st.blog.postservice.repository;
 import com.st.blog.postservice.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RestResource;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.Optional;
 
