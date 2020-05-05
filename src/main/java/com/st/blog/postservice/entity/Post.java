@@ -37,6 +37,8 @@ public class Post {
     private boolean commentsEnabled = true;
     private boolean enabled = false;
     private int views;
+    private int test;
+
     private String snippetTitle;
     private String snippetDescription;
 
