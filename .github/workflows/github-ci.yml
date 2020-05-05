@@ -54,18 +54,18 @@ jobs:
           java-version: 11
       - name: Create package
         run: mvn clean package -B -DskipTests
-#      - name: Create docker image
-#        run: docker build -t blogservice:latest .
-#      - name: Push the image to the registry
-#        run: docker push gustdebacker/blogservice:latest
 
       - name: Build Docker image
-      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+          run: |-
+            docker build --tag "eu.gcr.io/${{ secrets.GCLOUD_PROJECT }}/${{ secrets.GCLOUD_APP_NAME }}:$GITHUB_SHA" --build-arg GITHUB_SHA="$GITHUB_SHA" --build-arg GITHUB_SHA="$GITHUB_SHA" --build-arg GITHUB_REF="$GITHUB_REF" ./frontend
+      - name: Authenticate into Google Cloud Platform
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
           version: '286.0.0'
           service_account_email: ${{ secrets.GCLOUD_EMAIL }}
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
           project_id: ${{ secrets.GCLOUD_PROJECT }}
+
       - name: Configure Docker to use Google Cloud Platform
         run: "gcloud auth configure-docker --quiet"
       - run: |-
@@ -85,3 +85,9 @@ jobs:
           ./kustomize build . | kubectl apply -f -
           kubectl rollout status deployment/${{ secrets.GCLOUD_APP_NAME }}
           kubectl get services -o wide
+
+
+#      - name: Create docker image
+#        run: docker build -t blogservice:latest .
+#      - name: Push the image to the registry
+#        run: docker push gustdebacker/blogservice:latest
