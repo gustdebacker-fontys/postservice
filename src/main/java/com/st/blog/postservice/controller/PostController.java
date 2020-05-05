@@ -4,11 +4,12 @@ import com.st.blog.postservice.entity.Post;
 import com.st.blog.postservice.repository.PostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Optional;
 
 @RestController
@@ -32,5 +33,17 @@ public class PostController {
     var post = postRepository.findById(id);
     //TODO zie Loose-Coupling.txt
     return post;
+  }
+
+  @PostMapping("/")
+  public ResponseEntity<Post> create(@RequestBody Post post) throws URISyntaxException {
+    Post createdPost = postRepository.save(post);
+    if (createdPost == null){
+      return ResponseEntity.notFound().build();
+    }
+    else{
+      URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(createdPost.getId()).toUri();
+      return ResponseEntity.created(uri).body(createdPost);
+    }
   }
 }

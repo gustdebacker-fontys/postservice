@@ -54,51 +54,34 @@ jobs:
           java-version: 11
       - name: Create package
         run: mvn clean package -B -DskipTests
-      - name: Create docker image
-        run: docker build -t blogservice:latest .
-      - name: Push the image to the registry
-        run: docker push gustdebacker/blogservice:latest
-
-#  deploy:
-#    name: Deploy the project
-#    runs-on: ubuntu-latest
-#    #     needs: test
-#
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Set up JDK 11
-#        uses: actions/setup-java@v1
-#        with:
-#          java-version: 11
-#      - name: Create package
-#        run: mvn clean package -B -DskipTests
-#        working-directory: ./BlogService
 #      - name: Create docker image
 #        run: docker build -t blogservice:latest .
-#        working-directory: ./BlogService
+#      - name: Push the image to the registry
+#        run: docker push gustdebacker/blogservice:latest
+
+      - name: Build Docker image
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: '286.0.0'
+          service_account_email: ${{ secrets.GCLOUD_EMAIL }}
+          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+          project_id: ${{ secrets.GCLOUD_PROJECT }}
+      - name: Configure Docker to use Google Cloud Platform
+        run: "gcloud auth configure-docker --quiet"
+      - run: |-
+          gcloud container clusters  get-credentials ${{ secrets.GCLOUD_CLUSTER }} --zone ${{ secrets.GCLOUD_ZONE }}
+
+      - name: Push image to Google Cloud Container Registry
+        run: "docker push eu.gcr.io/${{ secrets.GCLOUD_PROJECT }}/${{ secrets.GCLOUD_APP_NAME }}:$GITHUB_SHA"
 
 
-
-
-
-
-#      - name: Run docker container
-#        working-directory: ${{env.working-directory}}
-#        run: docker run -d --name specialist-blog -p 8080:8080 blogservice:latest
-
-
-#      - name: Build Docker container
-#        run: |
-#          mkdir -p ./**/target/*.jar
-#          mv artifact/github-actions-java-maven.jar github-actions-java-maven/target
-#          docker build -t de.rieckpil.blog/github-actions-sample github-actions-java-maven
-#        - name: Access secrets
-#          env:
-#            SUPER_SECRET: ${{ secrets.SUPER_SECRET }}
-#          run: echo "Content of secret - $SUPER_SECRET"
-#        - name: Push Docker Images
-#          run: echo "Pushing Docker image to Container Registry (e.g. ECR)"
-#        - name: Deploy application
-#          run: echo "Deploying application (e.g. Kubernets)"
-
-# https://rieckpil.de/github-actions-for-java-automate-your-maven-workflows/
+      - name: Set up Kustomize
+        run: |-
+          curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
+          chmod u+x ./kustomize
+      - name: Deploy
+        run: |-
+          ./kustomize edit set image eu.gcr.io/${{ secrets.GCLOUD_PROJECT }}/IMAGE:TAG=eu.gcr.io/${{ secrets.GCLOUD_PROJECT }}/${{ secrets.GCLOUD_APP_NAME }}:$GITHUB_SHA
+          ./kustomize build . | kubectl apply -f -
+          kubectl rollout status deployment/${{ secrets.GCLOUD_APP_NAME }}
+          kubectl get services -o wide
