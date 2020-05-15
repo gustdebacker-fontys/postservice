@@ -5,10 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RestResource;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
 
+@CrossOrigin("*")
 public interface PostRepository extends PagingAndSortingRepository<Post, Integer> {
     @RestResource(path = "/byAuthorId")
     Page<Post> getPostsByAuthorId (Pageable pageable, int authorId);

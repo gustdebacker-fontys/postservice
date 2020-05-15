@@ -1,7 +1,13 @@
 package com.st.blog.postservice.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.st.blog.postservice.entity.Post;
+import com.st.blog.postservice.model.Comment;
 import com.st.blog.postservice.repository.PostRepository;
+import javassist.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -10,10 +16,16 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/posts")
+@CrossOrigin("*")
 public class PostController {
   public PostController(PostRepository postRepository) {
     this.postRepository = postRepository;
@@ -21,17 +33,56 @@ public class PostController {
 
   private final PostRepository postRepository;
 
+  private final HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+
   @GetMapping
   public Page<Post> findAll(Pageable pageable){
     var posts = postRepository.findAll(pageable);
-    //TODO zie Loose-Coupling.txt
+
+
+    for(Post post : posts){
+      post = addCommentsToPost(post);
+    }
+
     return posts;
   }
 
   @GetMapping("/{id}")
-  public Optional<Post> findById(@PathVariable("id") int id){
+  public Post findById(@PathVariable("id") int id){
     var post = postRepository.findById(id);
-    //TODO zie Loose-Coupling.txt
+
+    return addCommentsToPost(post.get());
+  }
+
+  private Post addCommentsToPost(Post post){
+    var page = 0;
+    var pageSize = 10;
+    var url = "http://localhost:8083/comments/search/byPostId?page=" + page + "&size=" + pageSize + "&postId=" + post.getId();
+
+    try {
+      HttpRequest httpRequest = HttpRequest.newBuilder().GET()
+        .uri(URI.create(url))
+        .setHeader("content-type", "application/json").build();
+
+      HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+      JsonObject jsonObject = new Gson().fromJson(response.body(), JsonObject.class);
+
+      JsonObject posts = jsonObject.get("_embedded").getAsJsonObject();
+      JsonArray jsonArray = posts.getAsJsonArray("comments");
+
+      Comment[] commentList = new GsonBuilder().create().fromJson(jsonArray, Comment[].class);
+
+      Set<Comment> commentSet = new HashSet<Comment>();
+      for (Comment comment : commentList){
+        commentSet.add(comment);
+      }
+
+      post.setComments(commentSet);
+    }
+    catch (Exception e){
+      e.printStackTrace();
+    }
+
     return post;
   }
 
