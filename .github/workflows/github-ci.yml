@@ -23,8 +23,8 @@ jobs:
     - name: Create package
       run: mvn clean package -B -DskipTests
 
-    - name: Download Sonarqube
-      run: mvn verify sonar:sonar
+    - name: Run Sonarqube
+      run: mvn verify sonar:sonar -B -github.token=${{secrets.GITHUB_TOKEN}} -dsonar.token=${{secrets.SONAR_TOKEN}}
 
   test:
     name: Test the project
