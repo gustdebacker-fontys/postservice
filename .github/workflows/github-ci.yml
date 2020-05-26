@@ -23,8 +23,6 @@ jobs:
     - name: Create package
       run: mvn clean package -B -DskipTests
 
-    - name: run sonar
-      run: org.sonarsource.scanner.maven:sonar
     - name: Download Sonarqube
       run: mvn verify sonar:sonar
 
