@@ -23,8 +23,9 @@ jobs:
     - name: Create package
       run: mvn clean package -B -DskipTests
 
-    - name: Run Sonarqube
+    - name: Download Sonarqube
       uses: sonarsource/sonarcloud-github-action@master
+    - name: Download Sonarqube
       run: mvn verify sonar:sonar
 
   test:
