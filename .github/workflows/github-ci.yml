@@ -24,7 +24,7 @@ jobs:
       run: mvn clean package -B -DskipTests
 
     - name: Run Sonarqube
-      run: mvn verify sonar:sonar -B -github.token=${{secrets.GITHUB_TOKEN}} -dsonar.token=${{secrets.SONAR_TOKEN}}
+      run: mvn verify sonar:sonar -B -Dgithub.token=${{secrets.GITHUB_TOKEN}} -Dsonar.token=${{secrets.SONAR_TOKEN}}
 
   test:
     name: Test the project
