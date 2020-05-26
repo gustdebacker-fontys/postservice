@@ -37,7 +37,8 @@ jobs:
 #          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
 
-
+    - name: Install Sonar
+      run: mvn verify org.sonarsource.scanner.maven:sonar
     - name: Run Sonarqube
       run: mvn verify sonar:sonar
 
