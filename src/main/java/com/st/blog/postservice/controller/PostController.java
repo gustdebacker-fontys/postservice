@@ -1,9 +1,7 @@
 package com.st.blog.postservice.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.*;
 import com.st.blog.postservice.entity.Post;
 import com.st.blog.postservice.model.Comment;
 import com.st.blog.postservice.repository.PostRepository;

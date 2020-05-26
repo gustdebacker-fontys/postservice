@@ -39,8 +39,8 @@ public class PostRepositoryTests {
   @BeforeEach
   public void setup(){
     var posts = new HashSet<Post>();
-    posts.add(new Post(branchId, testArticle, "https://soliloquywp.com/wp-content/uploads/2017/07/test-your-featured-images-wordpress.jpg", authorId));
-    posts.add(new Post(branchId, testArticle, "https://soliloquywp.com/wp-content/uploads/2017/07/test-your-featured-images-wordpress.jpg", authorId));
+    posts.add(new Post(branchId, "Test title", testArticle, "https://soliloquywp.com/wp-content/uploads/2017/07/test-your-featured-images-wordpress.jpg", authorId));
+    posts.add(new Post(branchId, "Test title", testArticle, "https://soliloquywp.com/wp-content/uploads/2017/07/test-your-featured-images-wordpress.jpg", authorId));
 
     for (var post : posts){
       testEntityManager.persist(post);

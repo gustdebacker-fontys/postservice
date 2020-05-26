@@ -23,6 +23,9 @@ jobs:
     - name: Create package
       run: mvn clean package -B -DskipTests
 
+    - name: Run Sonarqube
+      run: mvn verify sonar:sonar
+
   test:
     name: Test the project
     runs-on: ubuntu-latest

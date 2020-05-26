@@ -24,6 +24,9 @@ public class Post {
     private int branch;
 
     @NotNull
+    private String title;
+
+    @NotNull
     @Size(min = 240, max = 10000)
     private String article;
 
@@ -46,8 +49,9 @@ public class Post {
     @Transient
     private Set<Comment> comments;
 
-    public Post(int branch , String article, String featuredImage, int authorId){
+    public Post(int branch, String title, String article, String featuredImage, int authorId){
         this.branch = branch;
+        this.title = title;
         this.article = article;
         this.featuredImage = featuredImage;
         this.authorId = authorId;

@@ -18,6 +18,10 @@
   <properties>
     <java.version>11</java.version>
     <maven.compiler.release>11</maven.compiler.release>
+    <sonar.projectKey>gustdebacker-fontys_postservice</sonar.projectKey>
+    <sonar.organization>gustdebacker-fontys</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.login>f9d48342ca8d9d0ef439c9719b18d0a4f90905aa</sonar.login>
   </properties>
 
   <dependencies>
