@@ -5,13 +5,17 @@ import com.google.gson.*;
 import com.st.blog.postservice.entity.Post;
 import com.st.blog.postservice.model.Comment;
 import com.st.blog.postservice.repository.PostRepository;
+import com.st.blog.postservice.security.annotation.AdminAuthorization;
 import javassist.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.annotation.security.RolesAllowed;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -34,6 +38,7 @@ public class PostController {
   private final HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
 
   @GetMapping
+  @RolesAllowed("ROLE_ADMINISTRATOR")
   public Page<Post> findAll(Pageable pageable){
     var posts = postRepository.findAll(pageable);
 
