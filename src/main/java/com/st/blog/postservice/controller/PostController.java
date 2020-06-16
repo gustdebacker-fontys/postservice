@@ -38,7 +38,7 @@ public class PostController {
   private final HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
 
   @GetMapping
-  @RolesAllowed("ROLE_ADMINISTRATOR")
+//  @RolesAllowed("ROLE_ADMINISTRATOR")
   public Page<Post> findAll(Pageable pageable){
     var posts = postRepository.findAll(pageable);
 
@@ -56,6 +56,8 @@ public class PostController {
 
     return addCommentsToPost(post.get());
   }
+
+
 
   private Post addCommentsToPost(Post post){
     var page = 0;

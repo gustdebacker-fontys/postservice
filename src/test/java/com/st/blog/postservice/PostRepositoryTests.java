@@ -52,6 +52,5 @@ public class PostRepositoryTests {
     testEntityManager.flush();
 
     postCount = posts.size();
-    //comment to run pipeline
   }
 }
